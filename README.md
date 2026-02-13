@@ -41,4 +41,4 @@ Para quem deseja se aprofundar, a documentação oficial do GitHub é o melhor l
 *   [Marketplace de Actions](https://github.com/marketplace?type=actions) (para encontrar actions prontas)
 
 ---
-*Este documento é mantido pelo time Caribe. Em caso de dúvidas, ou informações deprecadas , abra uma issue neste repositório.*
+*Este documento é mantido pelo time Caribe. Em caso de dúvidas, ou informações obsoletas, por favor abra uma issue neste repositório.*
