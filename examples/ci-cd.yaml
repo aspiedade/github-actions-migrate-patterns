@@ -1,0 +1,122 @@
+# Nome do Workflow: Será exibido na aba "Actions" do repositório.
+name: CI/CD - Deploy de Cloud Function
+
+# Gatilho (Event): Acionamento manual do workflow.
+on:
+  workflow_dispatch:
+    # Inputs: Parâmetros que podem ser preenchidos ao iniciar o workflow manualmente.
+    inputs:
+      environment:
+        type: choice
+        description: 'Selecione o ambiente para o deploy'
+        required: true
+        default: 'qa'
+        options:
+          - qa
+          - prd
+
+# Controla a concorrência para evitar deploys simultâneos no mesmo ambiente.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.inputs.environment }}
+  cancel-in-progress: true
+
+jobs:
+  ################################################
+  # JOB 1: Testes Unitários                      #
+  ################################################
+  test:
+    name: Testes Unitários
+    runs-on: ubuntu-latest # Runner padrão do GitHub para testes
+    steps:
+      - name: 1. Baixando o código do repositório
+        uses: actions/checkout@v4
+
+      - name: 2. Configurando o ambiente Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11' # Ou a versão que seu projeto utiliza
+
+      - name: 3. Configurando o cache de dependências
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+
+      - name: 4. Instalando as dependências
+        run: pip install -r projects/app/requirements.txt # Ajuste o caminho se necessário
+
+      - name: 5. Rodando os testes unitários (Pytest)
+        run: |
+          pip install pytest
+          pytest projects/app/tests/ # Ajuste o caminho se necessário
+
+  ################################################
+  # JOB 2: Deploy no Google Cloud                #
+  ################################################
+  deploy:
+    name: Deploy para ${{ github.event.inputs.environment }}
+    runs-on: 'uolcs-runner-data-analytics' # Usando o runner customizado
+    needs: test # Depende do sucesso do job de testes
+
+    # Define as variáveis de ambiente com base na escolha do usuário
+    environment: ${{ github.event.inputs.environment }}
+
+    steps:
+      - name: 1. Baixando o código do repositório
+        uses: actions/checkout@v4
+
+      # ======================================================================================
+      # OBS: O ideal é migrar para Workload Identity Federation (WIF) para evitar o uso
+      # de chaves de serviço de longa duração. Mantive 'credentials_json' para seguir
+      # seu exemplo, mas a migração para WIF é fortemente recomendada por segurança.
+      # ======================================================================================
+      - name: 2. Autenticando com o Google Cloud (DEV)
+        if: github.event.inputs.environment == 'dev'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+      - name: 2. Autenticando com o Google Cloud (PRD)
+        if: github.event.inputs.environment == 'prd'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_DATALAKE_PRD }}'
+
+      - name: 3. Configurando o SDK do gcloud
+        uses: 'google-github-actions/setup-gcloud@v2'
+
+      - name: 4. Definindo variáveis de ambiente para o Deploy
+        id: vars
+        run: |
+          if [[ "${{ github.event.inputs.environment }}" == "prd" ]]; then
+            echo "GCP_PROJECT=uolcs-datalake-prd" >> $GITHUB_ENV
+            echo "SERVICE_ACCOUNT=sa-app-caribe@uolcs-datalake-prd.iam.gserviceaccount.com" >> $GITHUB_ENV
+            echo "VPC_CONNECTOR=projects/uolcs-dados-prd/locations/us-central1/connectors/srvlessvpcdatalake" >> $GITHUB_ENV
+            echo "ENV_VARS=ENV=prd" >> $GITHUB_ENV
+          else
+            echo "GCP_PROJECT=uolcs-caribe-qa" >> $GITHUB_ENV
+            echo "SERVICE_ACCOUNT=sa-app-caribe@uolcs-caribe-qa.iam.gserviceaccount.com" >> $GITHUB_ENV
+            echo "VPC_CONNECTOR=projects/uolcs-redes-qa/locations/us-central1/connectors/serverlessvpcdados" >> $GITHUB_ENV
+            echo "ENV_VARS=ENV=dev" >> $GITHUB_ENV
+          fi
+
+      - name: 5. Deploy da Cloud Function
+        run: |
+          gcloud functions deploy nome-do-app \
+            --project ${{ env.GCP_PROJECT }} \
+            --service-account ${{ env.SERVICE_ACCOUNT }} \
+            --vpc-connector ${{ env.VPC_CONNECTOR }} \
+            --set-env-vars ${{ env.ENV_VARS }} \
+            --source ${{ github.workspace }}/projects/radar-polarizacao/app \
+            --runtime python311 \
+            --trigger-http \
+            --entry-point event_handler \
+            --region us-central1 \
+            --max-instances 5 \
+            --concurrency 2 \
+            --timeout 540s \
+            --memory 4Gi \
+            --egress-settings all \
+            --ingress-settings internal-only \
+            --no-allow-unauthenticated \
+            --update-labels team=bahia,solution=radar-polarizacao
