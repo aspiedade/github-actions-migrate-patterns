@@ -1,5 +1,5 @@
 # Nome do Workflow: Será exibido na aba "Actions" do repositório.
-name: CI/CD - Deploy de Cloud Function
+name: time-repositorio-app
 
 # Gatilho (Event): Acionamento manual do workflow.
 on:

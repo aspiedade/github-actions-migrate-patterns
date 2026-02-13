@@ -3,14 +3,16 @@
 Manter uma nomenclatura consistente é fundamental para a legibilidade e manutenção dos workflows.
 
 ### 1. Arquivos de Workflow (`.yaml`)
-*   **Formato:** `[processo].yaml` (ex: `ci.yaml`, `build-e-deploy.yaml`, `verificacao-pr.yaml`).
+*   **Formato:** `{time}-{repositorio}-{app}.yaml` (ex: `caribe-app-caribe-transformer.yaml`).
 *   **Local:** Devem ficar no diretório `.github/workflows/`.
 
+![img.png](img/ex1.png)
+
 ### 2. Nome do Workflow (`name`)
-*   **Formato:** Descreva o objetivo do workflow de forma clara.
+*   **Formato:** Repita o nome do arquivo YAML.
 *   **Exemplo:**
     ```yaml
-    name: CI - Build e Testes
+    name: caribe-app-caribe-transformer
     ```
 
 ### 3. Nome do Job (`jobs.<job_id>`)
@@ -20,7 +22,6 @@ Manter uma nomenclatura consistente é fundamental para a legibilidade e manuten
     jobs:
       build-e-test:
         name: Build e Teste
-        ...
     ```
     *   A propriedade `name` (opcional) é o nome que aparece na UI do GitHub.
 

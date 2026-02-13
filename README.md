@@ -30,7 +30,7 @@ Para garantir a consistência, criamos documentos que detalham os padrões que d
 
 Na pasta [`/examples`](./examples), você encontrará arquivos `.yaml` prontos para serem usados como base para seus workflows.
 
-*   [`deploy-cloud-function.yaml`](./examples/ci-cd.yaml): Workflow básico que compila e testa uma function.
+*   [`deploy-cloud-function.yaml`](examples/time-repositorio-app.yaml): Workflow básico que compila e testa uma function.
 
 ## 🔗 Links Úteis
 
