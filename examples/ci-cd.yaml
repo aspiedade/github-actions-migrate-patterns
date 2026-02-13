@@ -107,7 +107,7 @@ jobs:
             --service-account ${{ env.SERVICE_ACCOUNT }} \
             --vpc-connector ${{ env.VPC_CONNECTOR }} \
             --set-env-vars ${{ env.ENV_VARS }} \
-            --source ${{ github.workspace }}/projects/radar-polarizacao/app \
+            --source ${{ github.workspace }}/projects/app \
             --runtime python311 \
             --trigger-http \
             --entry-point event_handler \
@@ -119,4 +119,4 @@ jobs:
             --egress-settings all \
             --ingress-settings internal-only \
             --no-allow-unauthenticated \
-            --update-labels team=bahia,solution=radar-polarizacao
+            --update-labels team=caribe,solution=nome-do-app

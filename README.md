@@ -14,7 +14,7 @@ Migrar um pipeline envolve traduzir a lógica do `Jenkinsfile` para um workflow 
     *   `steps` dentro de um `stage` se tornam `steps` dentro de um `job`.
 2. **Criação do Workflow:** Use um dos nossos exemplos pré-configurados na pasta [`/examples`](./examples) como ponto de partida.
 3. **Configuração de Gatilhos (Triggers):** Defina quando seu workflow deve rodar usando a chave `on` (ex: em push para a `main`, em um pull request, etc.).
-4. **Gerenciamento de Secrets:** Migre as credenciais do Jenkins para os **Secrets** do repositório ou da organização no GitHub. Veja nosso guia em [`docs/3-GERENCIAMENTO_DE_SECRETS.md`](./docs/3-GERENCIAMENTO_DE_SECRETS.md).
+4. **Gerenciamento de Secrets:** Migre as credenciais do Jenkins para os **Secrets** do repositório ou da organização no GitHub. Veja nosso guia em: [Secrets](./docs/3-gerenciamento_de_secrets.md).
 
 ## 📚 Documentação e Padrões
 
@@ -30,8 +30,7 @@ Para garantir a consistência, criamos documentos que detalham os padrões que d
 
 Na pasta [`/examples`](./examples), você encontrará arquivos `.yaml` prontos para serem usados como base para seus workflows.
 
-*   [`1-build-e-test.yaml`](./examples/1-build-e-test.yaml): Workflow básico que compila e testa uma aplicação a cada push.
-*   [`2-deploy-ambiente-dev.yaml`](./examples/2-deploy-ambiente-dev.yaml): Exemplo de como fazer deploy em um ambiente de desenvolvimento.
+*   [`deploy-cloud-function.yaml`](./examples/ci-cd.yaml): Workflow básico que compila e testa uma function.
 
 ## 🔗 Links Úteis
 
@@ -42,4 +41,4 @@ Para quem deseja se aprofundar, a documentação oficial do GitHub é o melhor l
 *   [Marketplace de Actions](https://github.com/marketplace?type=actions) (para encontrar actions prontas)
 
 ---
-*Este documento é mantido pela [sua área/time]. Em caso de dúvidas, abra uma issue neste repositório.*
+*Este documento é mantido pelo time Caribe. Em caso de dúvidas, ou informações deprecadas , abra uma issue neste repositório.*

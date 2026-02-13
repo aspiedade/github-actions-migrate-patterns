@@ -1,4 +1,4 @@
-# 🏷️ Padrão de Nomenclatura
+# 🏷️ Setup Inicial
 
 Manter uma nomenclatura consistente é fundamental para a legibilidade e manutenção dos workflows.
 
