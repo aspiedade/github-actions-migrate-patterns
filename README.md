@@ -14,7 +14,7 @@ Migrar um pipeline envolve traduzir a lógica do `Jenkinsfile` para um workflow 
     *   `steps` dentro de um `stage` se tornam `steps` dentro de um `job`.
 2. **Criação do Workflow:** Use um dos nossos exemplos pré-configurados na pasta [`/examples`](./examples) como ponto de partida.
 3. **Configuração de Gatilhos (Triggers):** Defina quando seu workflow deve rodar usando a chave `on` (ex: em push para a `main`, em um pull request, etc.).
-4. **Gerenciamento de Secrets:** Migre as credenciais do Jenkins para os **Secrets** do repositório ou da organização no GitHub. Veja nosso guia em: [Secrets](./docs/3-gerenciamento_de_secrets.md).
+4. **Gerenciamento de Secrets:** Migre as credenciais do Jenkins para os **Secrets** do repositório ou da organização no GitHub. Veja nosso guia em: [Secrets](./docs/gerenciamento_de_secrets.md).
 
 ## 📚 Documentação e Padrões
 
